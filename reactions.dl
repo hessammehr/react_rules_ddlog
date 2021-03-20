@@ -1,0 +1,26 @@
+typedef Rxn = Rxn { }
+
+input relation Reagent(id: string)
+input relation Reaction(id: string, reagents: string, product: string)
+input relation Done(id: string)
+
+relation Have(reagent: string)
+
+output relation Run(rxn_id: string)
+
+Run(x) :- 
+    Reaction(id, reagent, _),
+    not Done(id),
+    Have(reagent),
+    var x = id.group_by(reagent).min().
+
+Have(reagent) :- Reagent(reagent).
+Have(product) :-
+    Reaction(id, _, product),
+    Done(id).
+
+Reagent("a").
+
+Reaction("rxn1", "a", "b").
+Reaction("rxn2", "a", "c").
+Reaction("rxn3", "c", "f").
