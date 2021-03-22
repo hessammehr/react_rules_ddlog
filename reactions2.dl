@@ -1,0 +1,43 @@
+import set
+
+typedef Rxn = Rxn { }
+
+input relation Reagent(id: string)
+input relation Reaction(id: string, reagents: Set<string>, product: string)
+input relation Done(id: string)
+
+output relation CanRun(id: string)
+output relation Have(reagent: string)
+output relation HaveAll(reagents: Set<string>)
+output relation Run(rxn_id: string)
+
+
+HaveAll(reagents) :- 
+    Have(reagent),
+    var reagents = reagent.group_by(()).to_set().
+
+CanRun(id) :- 
+    Reaction(id, reagents, _),
+    HaveAll(all_reagents),
+    all_reagents.union(reagents) == all_reagents.
+
+Run(rxn) :-
+    Reaction(id, reagents, _),
+    not Done(id),
+    CanRun(id),
+    var rxn = id.group_by(reagents).min().
+
+Have(reagent) :- Reagent(reagent).
+Have(product) :-
+    Reaction(id, _, product),
+    CanRun(id),
+    Done(id).
+
+Reagent("a").
+Reagent("e").
+Reagent("x").
+
+Reaction("rxn1", ["a", "f"].to_set(), "b").
+Reaction("rxn2", ["a", "e"].to_set(), "c").
+Reaction("rxn3", ["c"].to_set(), "d").
+Reaction("rxn4", ["d"].to_set(), "f").

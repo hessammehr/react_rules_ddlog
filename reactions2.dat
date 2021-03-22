@@ -1,0 +1,19 @@
+start;
+insert Done("rxn2");
+commit;
+dump;
+
+start;
+insert Done("rxn3");
+commit;
+dump;
+
+start; 
+insert Done("rxn4");
+commit; 
+dump;
+
+start; 
+insert Done("rxn1");
+commit; 
+dump;
